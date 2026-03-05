@@ -120,7 +120,7 @@ st.markdown("<div class='smallnote'>Tap ▶️ once to start — then it will lo
 # ---------- Messages ----------
 main_message = [
     "Hamza, one of the most precious gifts Allah gave me in 2025 was you and your friendship.",
-    "Meri pyaari bro, happy birthday! I wish you a life full of happiness and joy ahead.",
+    "Mera pyaari bro, happy birthday! I wish you a life full of happiness and joy ahead.",
     "May Allah fulfill all your wishes and bless you with success in everything you do.",
     "And yes… I’m still waiting to hear your engagement news soon 😂",
 ]
@@ -191,3 +191,4 @@ else:
 st.markdown("</div></div></div>", unsafe_allow_html=True)
 
 st.caption("Autoplay with sound is blocked by most browsers. One tap on ▶️ is required.")
+
