@@ -14,7 +14,7 @@ def read_bytes(rel_path: str) -> bytes:
 friend_name = "Hamza"
 sender_name = "Imran Khan"
 
-# ---------- CSS: notebook + fixed page size + spiral ----------
+# ---------- CSS: notebook + fixed page size ----------
 st.markdown("""
 <style>
 .stApp{
@@ -28,13 +28,14 @@ st.markdown("""
 
 /* balloons */
 .balloon{ position:fixed; bottom:-120px; width:55px; height:70px; border-radius:50% 50% 45% 45%;
-  opacity:.35; animation: floatUp linear infinite; z-index:0; }
-.balloon:after{ content:""; position:absolute; left:50%; top:66px; width:2px; height:90px; background:rgba(0,0,0,.12); }
+  opacity:.30; animation: floatUp linear infinite; z-index:0; }
+.balloon:after{ content:""; position:absolute; left:50%; top:66px; width:2px; height:90px; background:rgba(0,0,0,.10); }
 @keyframes floatUp{ from{transform:translateY(0)} to{transform:translateY(-120vh)} }
 
 /* header */
-.bigtitle{ text-align:center; font-size:52px; font-weight:900; margin: 6px 0 4px 0; }
-.sub{ text-align:center; font-size:18px; opacity:.85; margin:0 0 12px 0; }
+.bigtitle{ text-align:center; font-size:52px; font-weight:900; margin: 8px 0 4px 0; }
+.sub{ text-align:center; font-size:18px; opacity:.85; margin:0 0 10px 0; }
+.smallnote{ font-size: 13px; opacity:0.72; text-align:center; margin-top:6px; }
 
 /* notebook shell */
 .notebook{
@@ -48,36 +49,16 @@ st.markdown("""
 
 /* notebook header strip */
 .nb-head{
-  padding: 14px 18px 14px 70px;
+  padding: 14px 18px;
   background: linear-gradient(90deg, rgba(255,205,178,.55), rgba(189,224,254,.55));
   display:flex; justify-content:space-between; align-items:center;
 }
 .nb-title{ font-size: 20px; font-weight: 850; margin:0; }
 .nb-page{ font-size: 14px; opacity:0.75; }
 
-/* spiral binding on the left */
-.spiral{
-  position:absolute;
-  left: 18px;
-  top: 12px;
-  bottom: 12px;
-  width: 34px;
-  border-radius: 18px;
-  background: linear-gradient(#f1f1f1, #ffffff);
-  border: 1px solid rgba(0,0,0,0.08);
-}
-.ring{
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 2px solid rgba(0,0,0,0.18);
-  margin: 14px auto;
-  background: rgba(255,255,255,0.6);
-}
-
-/* page area: fixed height */
+/* page area */
 .page{
-  padding: 18px 20px 18px 70px;
+  padding: 18px 20px;
   background: #fffdf7;
 }
 .page-inner{
@@ -89,7 +70,7 @@ st.markdown("""
 
 /* fixed media frame */
 .media-frame{
-  height: 520px;             /* change if you want taller/shorter */
+  height: 520px;             /* change to 600 if you want taller */
   border-radius: 16px;
   border: 1px solid rgba(0,0,0,0.08);
   background: white;
@@ -106,9 +87,7 @@ st.markdown("""
 }
 
 .caption{ font-size: 14px; opacity:0.72; margin-top: 10px; }
-.smallnote{ font-size: 13px; opacity:0.72; text-align:center; margin-top:6px; }
 
-/* make Streamlit buttons look nicer */
 div.stButton > button{
   border-radius: 14px !important;
   padding: 0.55rem 0.9rem !important;
@@ -116,6 +95,7 @@ div.stButton > button{
 </style>
 """, unsafe_allow_html=True)
 
+# Background balloons
 st.markdown("""
 <div class="balloon" style="left:6%; background:#ff6b6b; animation-duration: 14s;"></div>
 <div class="balloon" style="left:16%; background:#ffd166; animation-duration: 18s;"></div>
@@ -127,43 +107,17 @@ st.markdown("""
 <div class="balloon" style="left:88%; background:#ffa94d; animation-duration: 21s;"></div>
 """, unsafe_allow_html=True)
 
-# ---------- Audio: autoplay muted (allowed) + one-click unmute ----------
-audio_bytes = read_bytes("birthday-music.mp3")
-audio_b64 = base64.b64encode(audio_bytes).decode("utf-8")
-
-if "sound_on" not in st.session_state:
-    st.session_state.sound_on = False
-
-# Autoplay muted always
-st.markdown(f"""
-<audio autoplay loop muted id="bgm">
-  <source src="data:audio/mpeg;base64,{audio_b64}" type="audio/mpeg">
-</audio>
-""", unsafe_allow_html=True)
-
-# If user clicks "Unmute", we inject a small script to unmute/play
-topc1, topc2, topc3 = st.columns([1.2, 1.2, 5])
-with topc1:
-    if st.button("🔊 Unmute", use_container_width=True):
-        st.session_state.sound_on = True
-        st.rerun()
-with topc2:
-    if st.button("🔇 Mute", use_container_width=True):
-        st.session_state.sound_on = False
-        st.rerun()
-
-if st.session_state.sound_on:
-    st.markdown("""
-    <script>
-      const a = window.parent.document.getElementById("bgm");
-      if (a){ a.muted = false; a.volume = 0.9; a.play().catch(()=>{}); }
-    </script>
-    """, unsafe_allow_html=True)
-
+# ---------- Title ----------
 st.markdown(f"<div class='bigtitle'>Happy Birthday, {friend_name} 🎉</div>", unsafe_allow_html=True)
 st.markdown("<div class='sub'>Flip through the notebook pages 😄</div>", unsafe_allow_html=True)
-st.markdown("<div class='smallnote'>Music starts muted (browser rules). Tap <b>Unmute</b> once.</div>", unsafe_allow_html=True)
 
+# ---------- Music (reliable; needs one tap) ----------
+music = read_bytes("birthday-music.mp3")
+st.markdown("<div style='text-align:center; font-weight:800; opacity:.75;'>🎵 Background music</div>", unsafe_allow_html=True)
+st.audio(music, format="audio/mp3", loop=True)
+st.markdown("<div class='smallnote'>Tap ▶️ once to start — then it will loop.</div>", unsafe_allow_html=True)
+
+# ---------- Messages ----------
 main_message = [
     "Hamza, one of the most precious gifts Allah gave me in 2025 was you and your friendship.",
     "Meri pyaari bro, happy birthday! I wish you a life full of happiness and joy ahead.",
@@ -171,8 +125,12 @@ main_message = [
     "And yes… I’m still waiting to hear your engagement news soon 😂",
 ]
 
-cake_text = "I wish I were in Afghanistan so we could celebrate together and cut the cake in person. But for now, please accept this virtual cake from me 🎂"
+cake_text = (
+    "I wish I were in Afghanistan so we could celebrate together and cut the cake in person. "
+    "But for now, please accept this virtual cake from me 🎂"
+)
 
+# ---------- Pages (your exact order) ----------
 pages = [
     {"type": "img", "title": "Memory #1", "src": "hamza1.jpeg"},
     {"type": "img", "title": "Memory #2", "src": "hamza2.jpeg"},
@@ -187,14 +145,14 @@ pages = [
 if "page_index" not in st.session_state:
     st.session_state.page_index = 0
 
-# Navigation
+# ---------- Navigation ----------
 col_prev, col_mid, col_next = st.columns([1, 2, 1])
 with col_prev:
     if st.button("⬅️ Prev", use_container_width=True, disabled=(st.session_state.page_index == 0)):
         st.session_state.page_index -= 1
         st.rerun()
 with col_mid:
-    st.markdown("<div style='text-align:center; font-weight:800; opacity:0.75;'>Notebook</div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center; font-weight:850; opacity:0.75;'>Notebook</div>", unsafe_allow_html=True)
 with col_next:
     if st.button("Next ➡️", use_container_width=True, disabled=(st.session_state.page_index == len(pages) - 1)):
         st.session_state.page_index += 1
@@ -204,12 +162,8 @@ p = pages[st.session_state.page_index]
 page_no = st.session_state.page_index + 1
 total = len(pages)
 
-# Notebook UI
+# ---------- Notebook page ----------
 st.markdown("<div class='notebook'>", unsafe_allow_html=True)
-
-# Spiral rings (visual)
-rings_html = "".join(["<div class='ring'></div>" for _ in range(12)])
-st.markdown(f"<div class='spiral'>{rings_html}</div>", unsafe_allow_html=True)
 
 st.markdown(f"""
   <div class="nb-head">
@@ -236,4 +190,4 @@ else:
 
 st.markdown("</div></div></div>", unsafe_allow_html=True)
 
-st.caption("Note: sound autoplay is blocked by many browsers. The best you can do is autoplay muted + one tap to unmute.")
+st.caption("Autoplay with sound is blocked by most browsers. One tap on ▶️ is required.")
